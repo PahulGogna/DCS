@@ -3,14 +3,16 @@ from datetime import datetime, timedelta
 import Schemas
 from fastapi import HTTPException,Depends,status
 from fastapi.security import OAuth2PasswordBearer
-from config import config
-
+# from etc.secrets.config import config
+import os
 OAuth_schema = OAuth2PasswordBearer(tokenUrl="login")
 
-SECRET_KEY = config.get('SECRET_KEY')
-ALGORITHM = config.get('ALGORITHM')
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = os.environ["SECRET_KEY"]
+ALGORITHM = os.environ["ALGORITHM"]
 
+# SECRET_KEY = config.get('SECRET_KEY')
+# ALGORITHM = config.get('ALGORITHM')
+ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -43,5 +45,3 @@ def get_current_user(token:str = Depends(OAuth_schema)):
     credentials_exception = HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
 
     return verify_access_token(token, credentials_exception)
-        
-        

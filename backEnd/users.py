@@ -27,7 +27,6 @@ def create_user(user_data:Schemas.create_user,db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-
 @router.post('/login')
 def user_login(payLoad: OAuth2PasswordRequestForm = Depends(),db: Session = Depends(get_db)):
     user = db.query(models.Users).filter(models.Users.email == payLoad.username).first()
@@ -42,7 +41,7 @@ def user_login(payLoad: OAuth2PasswordRequestForm = Depends(),db: Session = Depe
     
     return {"user not found"}
 
-    
-@router.post('/logout')
-def user_logout():
-    pass
+@router.get("/{id}")
+def get_by_id(id:int,db: Session = Depends(get_db)):
+    user = db.query(models.Users).where(models.Users.id == id).first()
+    return user
