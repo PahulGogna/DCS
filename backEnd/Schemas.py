@@ -26,6 +26,12 @@ class create_user(User):
 
 class post(BaseModel):
     data : str
+    tag : str = "default"
+    
+
+class create_post(BaseModel):
+    data: str
+    tag: str = "default"
 
 class UserInDB(User):
     password: str

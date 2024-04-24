@@ -14,18 +14,18 @@ router = APIRouter(
 
 @router.post('/create')
 def create_user(user_data:Schemas.create_user,db: Session = Depends(get_db)):
-
     existing_users = db.query(models.Users).filter(models.Users.email==user_data.email).first()
     if existing_users:
-        raise HTTPException(status.HTTP_409_CONFLICT, detail="Email already exists")
-
+        return {"success": False,"detail": "email already exists"}
     password = user_data.password
+    if len(password) < 7:
+        return {"success": False,"detail": "password should atleast be 7 letters long"}
     user_data.password = hash(password)
     new_user = models.Users(**user_data.dict())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return new_user
+    return {"success" :True,"detail": new_user}
 
 @router.post('/login')
 def user_login(payLoad: OAuth2PasswordRequestForm = Depends(),db: Session = Depends(get_db)):
